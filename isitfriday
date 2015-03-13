@@ -1,0 +1,198 @@
+#!/usr/bin/env perl
+# isitfriday
+# checks if the day is friday, and if it is, returns exit status successful
+
+use strict;
+use warnings;
+use utf8;
+use DateTime;
+use Readonly;
+use Getopt::Long;
+use Pod::Usage;
+use Term::ANSIColor;
+
+Readonly my $FRIDAY => 5;
+
+sub evaluate_fridayness {
+    my $f = shift;
+    print "F = $f\n";
+    if ( $f == 0 ) {
+        print "Fridayness is zero. It's not friday at all.\n";
+    }
+    if ( $f > 0 && $f <= 0.25 ) {
+        print
+"There's some fridayness in the air. The fragrance of friday is discernible.\n";
+    }
+    if ( $f > 0.25 && $f <= 0.5 ) {
+        print "Friday is close, but still less friday than any other day.\n";
+    }
+    if ( $f > 0.5 && $f <= 0.75 ) {
+        print "We're definitely in the friday zone. Fridayness is above 0.5\n";
+    }
+    if ( $f > 0.75 && $f < 1 ) {
+        print "Gosh golly, it's so much friday it's fridayning.\n";
+    }
+    if ( $f == 1 ) {
+        print "THANK GOD IT'S FRIDAY!!!1!11!!!!111!!\n";
+    }
+}
+
+sub main {
+    my $verbose  = 0;
+    my $all      = 0;
+    my $help     = 0;
+    my $time     = 0;
+    my $evaluate = 0;
+
+    GetOptions(
+        'all|a'      => \$all,
+        'verbose|v'  => \$verbose,
+        'help|h'     => \$help,
+        'time|t'     => \$time,
+        'evaluate|e' => \$evaluate,
+    ) or pod2usage(2);
+
+    if ($help) {
+        pod2usage( -exitval => 0, -verbose => 2 );
+    }
+
+    # this date is UTC
+    my $now = DateTime->now( time_zone => 'local' );
+
+    my $fridays = 0;
+    my $entries = 0;
+    my $retval  = 1;
+
+    if ($all) {
+        for my $zone ( DateTime::TimeZone->all_names() ) {
+            $entries++;
+            $now->set_time_zone($zone);
+            print "$zone: ";
+            if ( $now->day_of_week() == $FRIDAY ) {
+                $fridays++;
+                print color 'green';
+                print 'YES';
+                print color 'reset';
+                if ($time) {
+                    print " ($now)";
+                }
+            }
+            else {
+                print color 'red';
+                print 'NO';
+                print color 'reset';
+                if ($verbose) {
+                    print q{ (} . $now->day_name();
+                    if ($time) {
+                        print ", $now)";
+                    }
+                    else {
+                        print q{)};
+                    }
+                }
+                elsif ($time) {
+                    print " ($now)";
+                }
+            }
+            print "\n";
+        }
+    }
+
+    if ( $now->day_of_week() == $FRIDAY ) {
+        $entries++;
+        $fridays++;
+        if ($verbose) {
+            print color 'green';
+            print 'YES :-D';
+            print color 'reset';
+            if ($time) {
+                print " ($now)";
+            }
+            print "\n";
+        }
+        elsif ($time) {
+            print "($now)\n";
+        }
+        $retval = 0;
+    }
+    else {
+        if ($verbose) {
+            print color 'red';
+            print 'NO ;-(';
+            print color 'reset';
+        }
+        if ( $verbose && $time ) {
+            print q{ };
+        }
+        if ($time) {
+            print "($now)";
+        }
+        if ( $verbose || $time ) {
+            print "\n";
+        }
+    }
+    if ($evaluate) {
+        evaluate_fridayness( $fridays / $entries );
+    }
+
+    return $retval;
+}
+
+exit main(@ARGV);
+
+__END__
+
+=head1 MANE
+
+isitfriday - checks if it is friday, and returns POSIX exit value true (0)
+if it is friday, exit value false (1) if it is now
+
+=head1 SYMPOSIA
+
+isitfriday [options]
+
+  Options (explanations provided by Google Search completion)
+    --help,     -h  Help me, I'm poor
+    --all,      -a  All about that bass
+    --time,     -t  Times of India
+    --evaluate, -e  Evaluate the integral
+    --verbose,  -v  Verbose in Unix
+
+=head1 OPTICS
+
+=over 4
+
+=item B<--help>
+
+Print a brief help message and exit
+
+=item B<--all>
+
+What about the rest of the world, how are they doing?
+
+=item B<--time>
+
+Print out the actual time
+
+=item B<--evaluate>
+
+Objectively speaking, how much friday is it? F is the fridayness ratio.
+
+=item B<--verbose>
+
+Be more explicit about what day it is (should not be needed by real Unix
+admins).
+
+=back
+
+=head1 INSCRIPTION
+
+B<isitfriday> will output the proper answer to whether it is friday or not,
+readable by humans, machines and cyborgs alike.
+
+=head1 EXSTATIC US
+
+The exit status is 0 if it is friday (in your locale). 1 if it is any other
+day.
+
+=cut
