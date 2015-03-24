@@ -44,6 +44,8 @@ sub main {
     my $time     = 0;
     my $evaluate = 0;
 
+    Getopt::Long::Configure ('bundling');
+
     GetOptions(
         'all|a'      => \$all,
         'verbose|v'  => \$verbose,
