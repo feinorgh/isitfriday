@@ -99,9 +99,11 @@ sub main {
             print "\n";
         }
     }
+    else {
+        $entries++;
+    }
 
     if ( $now->day_of_week() == $FRIDAY ) {
-        $entries++;
         $fridays++;
         if ($verbose) {
             print color 'green';
