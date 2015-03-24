@@ -142,10 +142,12 @@ exit main(@ARGV);
 
 __END__
 
+=encoding utf8
+
 =head1 MANE
 
-isitfriday - checks if it is friday, and returns POSIX exit value true (0)
-if it is friday, exit value false (1) if it is now
+isitfriday - checks if it is friday right now, and returns POSIX exit value
+true (0) if it is friday, exit value false (1) if it is any other day
 
 =head1 SYMPOSIA
 
@@ -162,23 +164,25 @@ isitfriday [options]
 
 =over 4
 
-=item B<--help>
+=item B<--help, -h>
 
 Print a brief help message and exit
 
-=item B<--all>
+=item B<--all, -a>
 
 What about the rest of the world, how are they doing?
 
-=item B<--time>
+=item B<--time, -t>
 
 Print out the actual time
 
-=item B<--evaluate>
+=item B<--evaluate, -e>
 
 Objectively speaking, how much friday is it? F is the fridayness ratio.
+Combined with -a it shows the global friday index (FI), without -a it shows
+the local FI
 
-=item B<--verbose>
+=item B<--verbose, -v>
 
 Be more explicit about what day it is (should not be needed by real Unix
 admins).
@@ -194,5 +198,9 @@ readable by humans, machines and cyborgs alike.
 
 The exit status is 0 if it is friday (in your locale). 1 if it is any other
 day.
+
+=head1 DICTATOR
+
+Written by Pär Karlsson <par.j.karlsson@telenor.com>
 
 =cut
