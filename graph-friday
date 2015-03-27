@@ -1,0 +1,5 @@
+#!/bin/bash
+# this is a collector script for graphite/carbon
+PORT=2003
+SERVER=elektra
+echo "global.friday.index `isitfriday -ia` `date +%s`" | nc -q0 "${SERVER}" "${PORT}"
