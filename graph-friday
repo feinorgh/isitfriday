@@ -2,4 +2,9 @@
 # this is a collector script for graphite/carbon
 PORT=2003
 SERVER=elektra
+PATH=/usr/local/bin:${PATH}
+export PERLBREW_ROOT=/opt/perlbrew
+export PERLBREW_HOME=/tmp/.perlbrew
+source ${PERLBREW_ROOT}/etc/bashrc
+perlbrew use perl-5.20.1
 echo "global.friday.index `isitfriday -ia` `date +%s`" | nc -q0 "${SERVER}" "${PORT}"
