@@ -43,6 +43,7 @@ sub main {
     my $help     = 0;
     my $time     = 0;
     my $evaluate = 0;
+    my $index    = 0;
 
     Getopt::Long::Configure ('bundling');
 
@@ -52,6 +53,7 @@ sub main {
         'help|h'     => \$help,
         'time|t'     => \$time,
         'evaluate|e' => \$evaluate,
+        'index|i'    => \$index,
     ) or pod2usage(2);
 
     if ($help) {
@@ -69,21 +71,25 @@ sub main {
         for my $zone ( DateTime::TimeZone->all_names() ) {
             $entries++;
             $now->set_time_zone($zone);
-            print "$zone: ";
+            if ( $verbose ) {
+                print "$zone: ";
+            }
             if ( $now->day_of_week() == $FRIDAY ) {
                 $fridays++;
-                print color 'green';
-                print 'YES';
-                print color 'reset';
-                if ($time) {
-                    print " ($now)";
+                if ($verbose) {
+                    print color 'green';
+                    print 'YES';
+                    print color 'reset';
+                    if ($time) {
+                        print " ($now)";
+                    }
                 }
             }
             else {
-                print color 'red';
-                print 'NO';
-                print color 'reset';
                 if ($verbose) {
+                    print color 'red';
+                    print 'NO';
+                    print color 'reset';
                     print q{ (} . $now->day_name();
                     if ($time) {
                         print ", $now)";
@@ -96,7 +102,9 @@ sub main {
                     print " ($now)";
                 }
             }
-            print "\n";
+            if ($verbose) {
+                print "\n";
+            }
         }
     }
     else {
@@ -110,12 +118,12 @@ sub main {
             print 'YES :-D';
             print color 'reset';
             if ($time) {
-                print " ($now)";
+                print " $now";
             }
             print "\n";
         }
         elsif ($time) {
-            print "($now)\n";
+            print "$now\n";
         }
         $retval = 0;
     }
@@ -137,6 +145,9 @@ sub main {
     }
     if ($evaluate) {
         evaluate_fridayness( $fridays / $entries );
+    }
+    if ($index) {
+        print $fridays / $entries . "\n";
     }
 
     return $retval;
@@ -162,6 +173,7 @@ isitfriday [options]
     --all,      -a  All about that bass
     --time,     -t  Times of India
     --evaluate, -e  Evaluate the integral
+    --index,    -i  Index funds
     --verbose,  -v  Verbose in Unix
 
 =head1 OPTICS
@@ -185,6 +197,10 @@ Print out the actual time
 Objectively speaking, how much friday is it? F is the fridayness ratio.
 Combined with -a it shows the global friday index (FI), without -a it shows
 the local FI
+
+=item B<--index, -i>
+
+Only output the friday index on a row by itself (suitable for graphing)
 
 =item B<--verbose, -v>
 
