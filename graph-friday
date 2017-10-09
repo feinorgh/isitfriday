@@ -1,5 +1,6 @@
 #!/bin/bash
 # this is a collector script for graphite/carbon
+# this script is in the public domain
 PORT=2003
 SERVER=elektra
 PATH=/usr/local/bin:${PATH}
